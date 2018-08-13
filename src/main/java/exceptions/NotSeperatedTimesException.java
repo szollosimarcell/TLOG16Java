@@ -11,7 +11,7 @@ package exceptions;
  */
 public class NotSeperatedTimesException extends RuntimeException{
 
-    private String message;
+    private final String message;
     
     public NotSeperatedTimesException(String message) {
         this.message = message;

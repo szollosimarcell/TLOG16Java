@@ -5,9 +5,12 @@ import basicclasses.TimeLogger;
 import basicclasses.Util;
 import basicclasses.WorkDay;
 import basicclasses.WorkMonth;
+import exceptions.InvalidInputException;
 import exceptions.NotExpectedTimeOrderException;
 import exceptions.NotSeperatedTimesException;
+
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,7 +19,6 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- *
  * @author MARCI
  */
 public class TimeLoggerUI {
@@ -32,6 +34,9 @@ public class TimeLoggerUI {
         this.workLog = workLog;
     }
 
+    /**
+     * Show a user interface-like menu in command line.
+     */
     public void showMenu() {
         System.out.println("\nTimeLogger menu:");
         System.out.println("------------------------------------------\n");
@@ -50,6 +55,12 @@ public class TimeLoggerUI {
         System.out.print("Your number: ");
     }
 
+    /**
+     * The programs menu, that keeps it responsive for the user.
+     *
+     * @param n The number of the menu command
+     * @return - true, if the program should continue, false, is the user has given an exit command.
+     */
     public boolean menu(int n) {
         try {
             switch (n) {
@@ -62,7 +73,7 @@ public class TimeLoggerUI {
                     listDays();
                     break;
                 case 3:
-                    listTasks(false);
+                    listAllTask();
                     break;
                 case 4:
                     addNewMonth();
@@ -92,11 +103,19 @@ public class TimeLoggerUI {
         return true;
     }
 
+    /**
+     * Exits the program.
+     *
+     * @return - true, if the user wants to exit, false if not
+     */
     private boolean exit() {
         System.out.print("\nAre you sure exitting from TimeLogger? (y/n) ");
         return Util.isYes();
     }
 
+    /**
+     * Lists the months of the time logger.
+     */
     private void listMonths() {
         if (workLog.areThereAnyMonths()) {
             int i = 1;
@@ -107,6 +126,9 @@ public class TimeLoggerUI {
         }
     }
 
+    /**
+     * Lists the days of a given month.
+     */
     private void listDays() {
         listMonths();
         System.out.print("\nPlease type the number of the month! ");
@@ -120,47 +142,58 @@ public class TimeLoggerUI {
         }
     }
 
-    private void listTasks(boolean onlyFinished) {
+    /**
+     * List all tasks of a given day.
+     */
+    private void listAllTask() {
         listDays();
         System.out.print("\nPlease type the number of the day! ");
         workDay = workMonth.getDays().get(Util.checkRange(1, workMonth.getDays().size(), true));
-        if (workDay.AreThereAnyTasks()) {
-            if (onlyFinished) {
-                ListOnlyUnfinishedTasks();
-            } else {
-                listAllTask();
+        if (workDay.areThereAnyTasks()) {
+            int i = 1;
+            for (Task task : workDay.getTasks()) {
+                System.out.println(i + ". " + task.toString());
+                i++;
             }
         }
     }
 
-    private void listAllTask() {
-        int i = 1;
-        for (Task task : workDay.getTasks()) {
-            System.out.println(i + ". " + task.toString());
-            i++;
-        }
-    }
-
+    /**
+     * List only the unfinished tasks of a given day.
+     */
     private void ListOnlyUnfinishedTasks() {
+        listDays();
+        System.out.print("\nPlease type the number of the day! ");
+        workDay = workMonth.getDays().get(Util.checkRange(1, workMonth.getDays().size(), true));
         unfinishedTaskIDs.clear();
-        int number = 1;
 
         System.out.println("You can only end unfinished tasks, these are the following:");
-        for (int i = 0; i < workDay.getTasks().size(); i++) {
-            Task task = workDay.getTasks().get(i);
-            if (task.getMinPerTask() == 0) {
-                System.out.println(number + ". " + task.toString());
-                unfinishedTaskIDs.add(i);
-                number++;
+        if (workDay.areThereAnyTasks()) {
+            for (int i = 0; i < workDay.getTasks().size(); i++) {
+                Task task = workDay.getTasks().get(i);
+                int number = 1;
+                if (task.getMinPerTask() == 0) {
+                    System.out.println(number + ". " + task.toString());
+                    unfinishedTaskIDs.add(i);
+                    number++;
+                }
             }
         }
     }
 
+    /**
+     * Adds a new work month to the time logger.
+     */
     private void addNewMonth() {
         WorkMonth month = createMonth();
         workLog.addMonth(month);
     }
 
+    /**
+     * Creates a month with specific user inputs.
+     *
+     * @return - the created work month
+     */
     private WorkMonth createMonth() {
         System.out.print("\nPlease type a year! ");
         int year = Util.checkRange(2000, LocalDate.now().getYear(), false);
@@ -174,6 +207,9 @@ public class TimeLoggerUI {
         return new WorkMonth(year, month);
     }
 
+    /**
+     * Adds a new workday to a specific given month
+     */
     private void addNewDay() {
         listMonths();
         System.out.print("\nPlease enter the number of the month: ");
@@ -183,6 +219,11 @@ public class TimeLoggerUI {
         workLog.addWorkDayByMonth(monthIndex, workDay, false);
     }
 
+    /**
+     * Creates a day with specific user inputs.
+     *
+     * @return - the created workday
+     */
     private WorkDay createDay() {
         YearMonth monthDate = workMonth.getDate();
         Calendar cal = new GregorianCalendar(monthDate.getYear(), monthDate.getMonth().getValue() - 1, 1);
@@ -197,6 +238,12 @@ public class TimeLoggerUI {
         }
     }
 
+    /**
+     * Asks for the number of the day in the given month.
+     *
+     * @param maxDay - the maximum day of the given month.
+     * @return - the number of the day
+     */
     private int askForDayNumber(int maxDay) {
         System.out.print("\nPlease enter the number of the day you want to add in! (the current month has " + maxDay + " days): ");
         if (workMonth.getDate().getMonthValue() == LocalDate.now().getMonthValue()) {
@@ -206,6 +253,11 @@ public class TimeLoggerUI {
         }
     }
 
+    /**
+     * Asks for the working time of the day whether the user wants to customize it or not
+     *
+     * @return the working time of the day, if the user haven't modified, returns 0
+     */
     private int askForWorkingMins() {
         System.out.print("\nThe default required working time is 7,5 hours, do you want to customize it? (y/n) ");
         if (Util.isYes()) {
@@ -216,6 +268,9 @@ public class TimeLoggerUI {
         }
     }
 
+    /**
+     * Start a task in the time logger
+     */
     private void startTask() {
         listDays();
         int monthIndex = workLog.getMonths().indexOf(workMonth);
@@ -226,6 +281,11 @@ public class TimeLoggerUI {
         workLog.addTaskByMonth(monthIndex, dayIndex, task);
     }
 
+    /**
+     * Creates a task with specific user input
+     *
+     * @return
+     */
     private Task createTask() {
         System.out.println("\nPlease enter the ID of the task, valid ID can be 4 digits or LT-{4 digits}, for example: LT-4863");
         System.out.print("\nYour taskID: ");
@@ -234,23 +294,33 @@ public class TimeLoggerUI {
         System.out.print("\nPlease type the comment of the task: ");
         task.setComment(scanner.nextLine());
 
-        System.out.println("\nThe endtime of the last task is " + workDay.latestTaskEndTime());
-        System.out.print("\nPlease enter the starting time (in format HH:MM): ");
+        System.out.println("\nThe end time of the last task is " + workDay.latestTaskEndTime());
+        System.out.print("\nPlease enter the starting time with at least quarterly accuracy and in a format like 'HH:MM' ");
         askForStartTime(task);
         return task;
     }
 
+    /**
+     * Asks for start time end set a default value for end time.
+     *
+     * @param task
+     */
     private void askForStartTime(Task task) {
-        String startTime = Util.checkTimeFormat();
-        task.setStartTime(startTime);
-        task.setEndTime(startTime);
-        if (!Util.isSeperatedTime(task, workDay.getTasks())) {
-            throw new NotSeperatedTimesException("\nYou can not start a task in this time, only in empty time intervals! ");
+        task.setStartTime(Util.timeInput());
+        task.setEndTime(task.getStartTime());
+        if (!Util.isMultipleQuarterHour(task.getStartTime().getMinute())) {
+            throw new InvalidInputException("\n Invalid time! Please enter the time with at least quarterly accuracy! ");
+        }
+        if (!Util.isSeparatedTime(task, workDay.getTasks())) {
+            throw new NotSeperatedTimesException("\nInvalid start time! The time intervals of the tasks cannot overlap each other!");
         }
     }
 
+    /**
+     * Ends a task in the time logger.
+     */
     private void endTask() {
-        listTasks(true);
+        ListOnlyUnfinishedTasks();
         int monthIndex = workLog.getMonths().indexOf(workMonth);
         int dayIndex = workMonth.getDays().indexOf(workDay);
 
@@ -258,28 +328,36 @@ public class TimeLoggerUI {
         int taskIndex = unfinishedTaskIDs.get(Util.checkRange(1, unfinishedTaskIDs.size(), true));
         Task task = workDay.getTasks().get(taskIndex);
 
-        workLog.removeTaskByMonth(monthIndex, dayIndex, taskIndex);
-        System.out.print("\nPlease enter the endtime (in format HH:MM): ");
+        System.out.print("\nPlease enter the end time (in format HH:MM): ");
         askForEndTime(task);
 
-        workLog.addTaskByMonth(monthIndex, dayIndex, task);
+        workLog.setTaskByMonth(monthIndex, dayIndex, taskIndex, task);
     }
 
     private void askForEndTime(Task task) {
-        String input = Util.checkTimeFormat();
-        task.setEndTime(input);
-        Util.roundCheck(task, true);
+        task.setEndTime(Util.timeInput());
+        if (!task.isValidTime()) {
+            throw new NotExpectedTimeOrderException("\nThe end time cannot be lesser than the start time");
+        }
+        if (!Util.isSeparatedTime(task, workDay.getTasks())) {
+            throw new NotSeperatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
+        }
 
-        while (!Util.isSeperatedTime(task, workDay.getTasks()) || !task.isValidTime()) {
-            System.out.println("You can not end a task in this time, only in empty time intervals! ");
-            input = Util.checkTimeFormat();
-            task.setEndTime(input);
-            Util.roundCheck(task, true);
+        if (!Util.isMultipleQuarterHour(task.getMinPerTask())) {
+            System.out.println("The time you have just given is not multiple of quarter hour. Do you want to round it? (y/n)");
+            if (Util.isYes()) {
+                Util.roundEndTime(task);
+            } else {
+                throw new InvalidInputException("");
+            }
         }
     }
 
+    /**
+     * Deletes a task from the time logger
+     */
     private void deleteTask() {
-        listTasks(false);
+        listAllTask();
         int monthIndex = workLog.getMonths().indexOf(workMonth);
         int dayIndex = workMonth.getDays().indexOf(workDay);
         System.out.print("Please enter the number of the task you want to delete: ");
@@ -291,8 +369,12 @@ public class TimeLoggerUI {
 
     }
 
+    /**
+     * Modifies a task in the time logger. Creates a copy of the task being altered and after modification it replaces
+     * the old task with the new one.
+     */
     private void modifyTask() {
-        listTasks(false);
+        listAllTask();
         int monthIndex = workLog.getMonths().indexOf(workMonth);
         int dayIndex = workMonth.getDays().indexOf(workDay);
 
@@ -306,6 +388,12 @@ public class TimeLoggerUI {
 
     }
 
+    /**
+     * This function is the modification menu of a specific task. It ends when the user decides to exit from the modification
+     * of the specific task.
+     *
+     * @param newTask - the task being modified
+     */
     public void modificationMenu(Task newTask) {
         int input;
         boolean modify = true;
@@ -330,12 +418,17 @@ public class TimeLoggerUI {
                         ModifyComment(newTask);
                         break;
                 }
-            } catch (NotExpectedTimeOrderException ex) {
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
         }
     }
 
+    /**
+     * Shows a user-interface-like modification menu for the specific task.
+     *
+     * @param task - the task being modified.
+     */
     public void showModificationMenu(Task task) {
         System.out.println("\nModification menu: " + task.toString());
         System.out.println("---------------------------------------------------------------------\n");
@@ -348,66 +441,93 @@ public class TimeLoggerUI {
         System.out.print("Your number: ");
     }
 
+    /**
+     * Exits the modification of the task, if the user decides to.
+     *
+     * @return
+     */
     private boolean exitModification() {
         System.out.print("Are you sure exitting form modification? (y/n) ");
         return Util.isYes();
     }
 
+    /**
+     * Modifies the id of the given task. Stores the previous id to the taskIdOld variable.
+     *
+     * @param task - the task being modified
+     */
     private void modifyTaskID(Task task) {
         System.out.print("Please enter the new TaskID: ");
-        task.setTaskIdOld();
         task.setTaskId(scanner.nextLine());
-        while (!task.isValidTaskId()) {
-            System.out.print("Wrong value, please type it again! ");
-            task.setTaskId(scanner.nextLine());
+        task.setTaskIdOld(task.getTaskId());
+        if (task.isValidTaskId()) {
+            throw new InvalidInputException("Invalid TaskID!");
         }
     }
 
     private void modifyStartTime(Task task) {
-        System.out.print("Please enter the new StartTime: ");
-        task.setStartTimeOld();
-        task.setStartTime(Util.checkTimeFormat());
-        Util.roundCheck(task, false);
-        while (Util.isSeperatedTime(task, workDay.getTasks()) || !task.isValidTime()) {
-            System.out.print("You can not start a task in this time, only in empty time intervals! ");
-            System.out.print("Please try again: ");
-            task.setStartTime(Util.checkTimeFormat());
-            Util.roundCheck(task, false);
+        System.out.print("Please enter the new start time: ");
+        task.setStartTimeOld(task.getStartTime());
+        task.setStartTime(Util.timeInput());
+        if (!task.isValidTime()) {
+            throw new NotExpectedTimeOrderException("\nThe end time cannot be lesser than the start time");
+        }
+        if (!Util.isSeparatedTime(task, workDay.getTasks())) {
+            throw new NotSeperatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
+        }
+        if (!Util.isMultipleQuarterHour(task.getMinPerTask())) {
+            System.out.println("The time you have just given is not multiple of quarter hour. Do you want to round it? (y/n)");
+            if (Util.isYes()) {
+                Util.roundStartTime(task);
+            } else {
+                throw new InvalidInputException("");
+            }
         }
     }
 
     private void modifyEndTime(Task task) {
-        System.out.print("Please enter the new EndTime in format (HH:MM): ");
-        task.setEndTimeOld();
-        task.setEndTime(Util.checkTimeFormat());
-        Util.roundCheck(task, true);
-        while (Util.isSeperatedTime(task, workDay.getTasks()) || !task.isValidTime()) {
-            System.out.print("You can not start a task in this time, only in empty time intervals! ");
-            System.out.print("Please try again: ");
-            task.setEndTime(Util.checkTimeFormat());
-            Util.roundCheck(task, true);
+        System.out.print("Please enter the new end time: ");
+        task.setEndTimeOld(task.getEndTime());
+        task.setEndTime(Util.timeInput());
+        if (!task.isValidTime()) {
+            throw new NotExpectedTimeOrderException("\nThe end time cannot be lesser than the start time");
+        }
+        if (!Util.isSeparatedTime(task, workDay.getTasks())) {
+            throw new NotSeperatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
+        }
+        if (!Util.isMultipleQuarterHour(task.getMinPerTask())) {
+            System.out.println("The time you have just given is not multiple of quarter hour. Do you want to round it? (y/n)");
+            if (Util.isYes()) {
+                Util.roundEndTime(task);
+            } else {
+                throw new InvalidInputException("");
+            }
         }
     }
 
+    /**
+     * Modifies the comment of the task. Stores the old comment to the commentOld variable.
+     *
+     * @param task
+     */
     private void ModifyComment(Task task) {
         System.out.print("Please type the new comment: ");
-        task.setCommentOld();
+        task.setCommentOld(task.getTaskId());
         task.setComment(scanner.nextLine());
     }
 
+    /**
+     * Show statistics for a given month.
+     */
     private void showStatistics() {
         listMonths();
-        if (!workLog.getMonths().isEmpty()) {
-            System.out.println("Please enter the number of the month you want to show the statistics for: ");
-            workMonth = workLog.getMonths().get(Util.checkRange(1, workLog.getMonths().size(), true));
-            if (!workMonth.getDays().isEmpty()) {
-                System.out.println("Summerized working hours of month " + workMonth.getDate() + " is " + workMonth.getSumPerMonth() + "\n");
-                workMonth.getDays().forEach((day) -> {
-                    System.out.println(day.getActualDay() + ": " + day.getSumPerDay());
-                });
-            } else {
-                System.out.println("This month is empty!");
-            }
+        System.out.println("Please enter the number of the month you want to show the statistics for: ");
+        workMonth = workLog.getMonths().get(Util.checkRange(1, workLog.getMonths().size(), true));
+        if (workMonth.areThereAnyDays()) {
+            System.out.println("Summarized working minutes of month " + workMonth.getDate() + " is " + workMonth.getSumPerMonth() + "\n");
+            workMonth.getDays().forEach((day) -> {
+                System.out.println(day.getActualDay() + ": " + day.getSumPerDay());
+            });
         }
     }
 }

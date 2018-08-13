@@ -1,13 +1,18 @@
 package basicclasses;
 
 import exceptions.InvalidInputException;
+
 import java.time.Duration;
 import java.time.LocalTime;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- *
  * @author MARCI
  */
+@Getter
+@Setter
 public final class Task {
 
     private String taskId;
@@ -43,14 +48,22 @@ public final class Task {
     public Task(String taskId) {
         this.taskId = taskId;
         if (!isValidTaskId()) {
-            throw new InvalidInputException("Invalid TaskID!");
+            throw new InvalidInputException("Invalid taskID!");
         }
     }
 
+    /**
+     * @return - the duration of the task in minutes
+     */
     public long getMinPerTask() {
         return Duration.between(startTime, endTime).toMinutes();
     }
 
+    /**
+     * Checks whether the if of the task is valid or not.
+     *
+     * @return - true, if valid, false, if not
+     */
     public boolean isValidTaskId() {
         return isValidRedmineTaskId() || isValidLTTaskId();
     }
@@ -75,69 +88,4 @@ public final class Task {
     public String toString() {
         return "taskId: " + taskId + ", startTime: " + startTime + ", endTime: " + endTime + ", comment: " + comment;
     }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
-    public void setStartTime(int hour, int min) {
-        this.startTime = LocalTime.of(hour, min);
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = LocalTime.parse(startTime);
-    }
-
-    public void setEndTime(int hour, int min) {
-        this.endTime = LocalTime.of(hour, min);
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = LocalTime.parse(endTime);
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public void setTaskIdOld() {
-        this.taskIdOld = taskId;
-    }
-
-    public void setStartTimeOld() {
-        this.startTimeOld = startTime;
-    }
-
-    public void setEndTimeOld() {
-        this.endTimeOld = endTime;
-    }
-
-    public void setCommentOld() {
-        this.commentOld = comment;
-    }
-
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
 }
