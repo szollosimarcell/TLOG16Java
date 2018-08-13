@@ -5,7 +5,7 @@ plugins {
     id 'net.ltgt.apt' version '0.10'
 }
 
-mainClassName = "control.Main"
+mainClassName = "com.szollosi.timelogger.root.control.Main"
 
 
 scmVersion {
@@ -33,7 +33,7 @@ run {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'control.Main'
+        attributes 'Main-Class': 'com.szollosi.timelogger.root.control.Main'
     }
 }
 
@@ -41,7 +41,7 @@ task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'TimeLogger with text UI',
         	'Implementation-Version': project.version,
-        	'Main-Class': 'control.Main'
+        	'Main-Class': 'com.szollosi.timelogger.root.control.Main'
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
