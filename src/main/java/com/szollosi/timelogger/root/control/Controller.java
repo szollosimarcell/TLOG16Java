@@ -44,8 +44,8 @@ class Controller {
 
     public int checkIfNumeric() {
         String input = scanner.nextLine();
-        if (!input.matches("[0-9]+")) {
-            System.out.print("Wrong value! Please type only numberic characters! ");
+        while (!input.matches("[0-9]+")) {
+            System.out.print("Wrong value! Please type only numeric characters! ");
             input = scanner.nextLine();
         }
         return Integer.parseInt(input);

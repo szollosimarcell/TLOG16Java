@@ -47,7 +47,7 @@ public class Util {
         } else {
             endTime = endTime.plusMinutes(15 - remainder);
         }
-        task.setStartTime(startTime);
+        task.setEndTime(endTime);
     }
 
     /**
@@ -56,8 +56,12 @@ public class Util {
      * @param min - the value being checked
      * @return - true, if the value if multiple of a quarter hour, false if not
      */
-    public static boolean isMultipleQuarterHour(long min) {
-        return min % 15 == 0;
+    public static boolean isMultipleQuarterHour(int min) {
+        if (min % 15 == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -83,14 +87,23 @@ public class Util {
      * @return - true, if the times are separated, false if not
      */
     public static boolean isSeparatedTime(Task t, List<Task> tasks) {
-        return tasks.stream().noneMatch(task -> (t.getStartTime().isBefore(task.getEndTime()) && task.getStartTime().isBefore(t.getEndTime()))
-                    || (t.getStartTime().equals(task.getStartTime())));
+        return tasks.stream().noneMatch(task -> t.getStartTime().isBefore(task.getEndTime()) && task.getStartTime().isBefore(t.getEndTime())
+                    || t.getStartTime().equals(task.getStartTime()));
     }
 
+    public static boolean isSeparatedTime(Task t, List<Task> tasks, int index) {
+        for (int i = 0; i < tasks.size(); i++) {
+            if (i != index && (t.getStartTime().isBefore(tasks.get(i).getEndTime()) && tasks.get(i).getStartTime().isBefore(t.getEndTime())
+                || t.getStartTime().equals(tasks.get(i).getStartTime()))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Checks whether the input is in the given interval. If it is an index of a list, the returned values is decreased by 1.
-     * If it is a normal input number, the returned value will be the input as it is.
+     * If it is a normal input number, the returned value will be the input itself.
      *
      * @param lowerLimit - the lower limit of the interval
      * @param upperLimit - the upper limit of the interval
