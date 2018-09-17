@@ -15,7 +15,7 @@ public class Util {
     public final static Scanner scanner = new Scanner(System.in);
 
     /**
-     * Rounds the start time of a given task to be multiple of quarter hour
+     * Rounds the start time of a given task to be multiple of quarter hour.
      *
      * @param task - the task which start time should be rounded
      */
@@ -33,7 +33,7 @@ public class Util {
     }
 
     /**
-     * Rounds the end time of a given task to be multiple of quarter hour
+     * Rounds the end time of a given task to be multiple of quarter hour.
      *
      * @param task - the task which end time should be rounded
      */
@@ -51,17 +51,13 @@ public class Util {
     }
 
     /**
-     * Checks if the given value is multiple of a quarter hour (15)
+     * Checks if the given value is multiple of a quarter hour.
      *
      * @param min - the value being checked
      * @return - true, if the value if multiple of a quarter hour, false if not
      */
-    public static boolean isMultipleQuarterHour(int min) {
-        if (min % 15 == 0) {
-            return true;
-        } else {
-            return false;
-        }
+    public static boolean isMultipleQuarterHour(long min) {
+        return min % 15 == 0;
     }
 
     /**
@@ -80,7 +76,8 @@ public class Util {
     }
 
     /**
-     * Checks whether a task is overlapping any other in the list of tasks
+     * Checks whether a task is overlapping any other in the list of tasks. In this case the tasks is a new task and the
+     * list of tasks doesn't contain it.
      *
      * @param t - the task being checked whether it is overlapping any other task or not
      * @param tasks - the list of task where the overlapping is checked
@@ -91,6 +88,15 @@ public class Util {
                     || t.getStartTime().equals(task.getStartTime()));
     }
 
+    /**
+     * Checks whether a task is overlapping any other in the list of tasks. In this case the tasks is being modified, the
+     * list of tasks already contains it, so the method skips the modified tasks index in the checking process.
+     *
+     * @param t
+     * @param tasks
+     * @param index
+     * @return
+     */
     public static boolean isSeparatedTime(Task t, List<Task> tasks, int index) {
         for (int i = 0; i < tasks.size(); i++) {
             if (i != index && (t.getStartTime().isBefore(tasks.get(i).getEndTime()) && tasks.get(i).getStartTime().isBefore(t.getEndTime())
@@ -110,8 +116,8 @@ public class Util {
      * @param isIndex - the boolean that decides whether it is an index, or a normal number input
      * @return - the input
      */
-    public static int checkRange(int lowerLimit, int upperLimit, boolean isIndex) {
-        int input = checkIfNumeric();
+    public static int checkInterval(int lowerLimit, int upperLimit, boolean isIndex) {
+        int input = inputIfNumeric();
         if (input < lowerLimit || upperLimit < input) {
             throw new InvalidInputException("Wrong value! Please type only correct or reasonable numbers!");
         }
@@ -123,7 +129,7 @@ public class Util {
      *
      * @return the input
      */
-    public static int checkIfNumeric() {
+    public static int inputIfNumeric() {
         String input = scanner.nextLine();
         if (!input.matches("[0-9]+")) {
             throw new InvalidInputException("Wrong value! Please type only numeric characters!");
@@ -136,7 +142,7 @@ public class Util {
      *
      * @return the input
      */
-    public static LocalTime timeInput() {
+    public static LocalTime inputTime() {
         String input = scanner.nextLine();
         if (!input.matches("^\\d{2}:\\d{2}$")) {
             throw new InvalidInputException("Invalid time format!");

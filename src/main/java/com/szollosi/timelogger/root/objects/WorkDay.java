@@ -21,15 +21,35 @@ public class WorkDay {
     private LocalDate actualDay = LocalDate.now();
     private long requiredMinPerDay = 450;
 
+    /**
+     * Constructor of the WorkDay class with separated LocalDate parameters.
+     *
+     * @param requiredMinPerDay
+     * @param year
+     * @param month
+     * @param day
+     */
     public WorkDay(long requiredMinPerDay, int year, int month, int day) {
         this.requiredMinPerDay = requiredMinPerDay;
         this.actualDay = LocalDate.of(year, month, day);
     }
 
+    /**
+     * Constructor of the WorkDay class with only LocalDate.
+     *
+     * @param year
+     * @param month
+     * @param day
+     */
     public WorkDay(int year, int month, int day) {
         this.actualDay = LocalDate.of(year, month, day);
     }
 
+    /**
+     * Constructor of the WorkDay class with only the required minutes for a working day.
+     *
+     * @param requiredMinPerDay
+     */
     public WorkDay(long requiredMinPerDay) {
         this.requiredMinPerDay = requiredMinPerDay;
     }
@@ -78,7 +98,7 @@ public class WorkDay {
      */
     public long getSumPerDay() {
         long sum = 0;
-        if (!tasks.isEmpty()) {
+        if (areThereAnyTasks()) {
             for (Task task : tasks) {
                 sum += task.getMinPerTask();
             }

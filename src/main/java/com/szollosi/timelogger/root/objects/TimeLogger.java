@@ -75,7 +75,7 @@ public class TimeLogger {
      * Checks whether the given month already exists in the time logger
      *
      * @param workMonth - the month that should be checked
-     * @return - true, if the given month is true, false, if not
+     * @return
      */
     public boolean isNewMonth(WorkMonth workMonth) {
         if (months.stream().noneMatch(month -> (month.getDate().compareTo(workMonth.getDate()) == 0))) {

@@ -18,31 +18,52 @@ class Controller {
     private final TimeLoggerUI ui = new TimeLoggerUI(workLog);
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Constructor of the controller class.
+     *
+     */
     public Controller() {
         start();
     }
 
+    /**
+     * This method starts the cycle of the program until the user decides to exit.
+     *
+     */
     private void start() {
         System.out.println("Welcome to TimeLogger!\n\n");
         ui.showMenu();
 
-        int input = checkRange(0, 10, true);
+        int input = checkInterval(0, 10);
         while (ui.menu(input)) {
             ui.showMenu();
-            input = checkRange(0, 10, false);
+            input = checkInterval(0, 10);
         }
     }
 
-    public int checkRange(int lowerLimit, int upperLimit, boolean isIndex) {
-        int input = checkIfNumeric();
+    /**
+     * Calls the inputIfNumeric method.
+     * Checks the numeric input whether it fits in the range of the options the program offers.
+     *
+     * @param lowerLimit - the lower limit of the interval
+     * @param upperLimit - the upper limit of the interval
+     * @return - the input
+     */
+    public int checkInterval(int lowerLimit, int upperLimit) {
+        int input = inputIfNumeric();
         while (input < lowerLimit || upperLimit < input) {
             System.out.print("Wrong number! ");
-            input = checkIfNumeric();
+            input = inputIfNumeric();
         }
         return input;
     }
 
-    public int checkIfNumeric() {
+    /**
+     * Requests a numeric input from the user with restrictions. The input must be a numeric character.
+     *
+     * @return - the input
+     */
+    public int inputIfNumeric() {
         String input = scanner.nextLine();
         while (!input.matches("[0-9]+")) {
             System.out.print("Wrong value! Please type only numeric characters! ");

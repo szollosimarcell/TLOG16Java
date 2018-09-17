@@ -5,8 +5,10 @@ import com.szollosi.timelogger.root.exceptions.InvalidInputException;
 import java.time.Duration;
 import java.time.LocalTime;
 
+import com.szollosi.timelogger.root.exceptions.NotExpectedTimeOrderException;
 import lombok.Getter;
 import lombok.Setter;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 /**
  * @author MARCI
@@ -25,6 +27,16 @@ public final class Task {
     private LocalTime endTimeOld;
     private String commentOld;
 
+    /**
+     * Constructor of the Task class with separated time parts.
+     *
+     * @param taskId
+     * @param startHour
+     * @param startMin
+     * @param endHour
+     * @param endMin
+     * @param comment
+     */
     public Task(String taskId, int startHour, int startMin, int endHour, int endMin, String comment) {
         this.taskId = taskId;
         this.startTime = LocalTime.of(startHour, startMin);
@@ -32,6 +44,14 @@ public final class Task {
         this.comment = comment;
     }
 
+    /**
+     * Constructor of the Task class with LocalTime.
+     *
+     * @param taskId
+     * @param startTime
+     * @param endTime
+     * @param comment
+     */
     public Task(String taskId, String startTime, String endTime, String comment) {
         this.taskId = taskId;
         this.startTime = LocalTime.parse(startTime);
@@ -39,12 +59,24 @@ public final class Task {
         this.comment = comment;
     }
 
+    /**
+     * Constructor of the Task class without ending time.
+     *
+     * @param taskId
+     * @param startTime
+     * @param comment
+     */
     public Task(String taskId, String startTime, String comment) {
         this.taskId = taskId;
         this.startTime = LocalTime.parse(startTime);
         this.comment = comment;
     }
 
+    /**
+     * Constructor of the Task class with only the id of the task.
+     *
+     * @param taskId
+     */
     public Task(String taskId) {
         this.taskId = taskId;
         if (!isValidTaskId()) {
@@ -60,9 +92,9 @@ public final class Task {
     }
 
     /**
-     * Checks whether the if of the task is valid or not.
+     * Checks whether the id of the task is valid or not.
      *
-     * @return - true, if valid, false, if not
+     * @return
      */
     public boolean isValidTaskId() {
         return isValidRedmineTaskId() || isValidLTTaskId();
@@ -76,6 +108,11 @@ public final class Task {
         return taskId.matches("^LT-\\d{4}$");
     }
 
+    /**
+     * Checks whether the ending time is after the starting time.
+     *
+     * @return
+     */
     public boolean isValidTime() {
         return startTime.compareTo(endTime) <= 0;
     }

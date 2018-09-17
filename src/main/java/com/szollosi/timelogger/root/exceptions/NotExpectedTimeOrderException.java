@@ -10,20 +10,15 @@ package com.szollosi.timelogger.root.exceptions;
  * @author precognox
  */
 public class NotExpectedTimeOrderException extends RuntimeException{
-    
-    private String message = "The endtime can not be less than the starttime! ";
 
-    public NotExpectedTimeOrderException() {
-    }
+    private final String message;
 
     public NotExpectedTimeOrderException(String message) {
         this.message = message;
     }
     
     @Override
-    public String toString() {
+    public String getMessage() {
         return message;
     }
-    
-    
 }

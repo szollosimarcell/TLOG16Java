@@ -21,6 +21,12 @@ public class WorkMonth {
     private final YearMonth date;
     private final long requiredMinPerMonth = 9000;
 
+    /**
+     * Constructor of the WorkMonth class with the date parameters.
+     *
+     * @param year
+     * @param month
+     */
     public WorkMonth(int year, int month) {
         this.date = YearMonth.of(year, month);
     }
@@ -32,7 +38,7 @@ public class WorkMonth {
      * @param isWeekendEnabled - decides whether adding workday to weekend is enabled or not
      */
     public void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) {
-        if (isWeekendEnabled && isNewDate(workDay) && isSameMonth(workDay) || !isWeekendEnabled && Util.isWeekday(workDay) && isNewDate(workDay) && isSameMonth(workDay)) {
+        if (isWeekendEnabled && isNewDate(workDay) || !isWeekendEnabled && Util.isWeekday(workDay) && isNewDate(workDay)) {
             days.add(workDay);
         } else {
             if (!Util.isWeekday(workDay)) {
@@ -73,7 +79,7 @@ public class WorkMonth {
     }
 
     /**
-     * Gets the difference between the required working mins and the completed working mins in a month.
+     * Gets the difference between the required working minutes and the completed working minutes in a month.
      *
      * @return - long - the difference in minutes
      */
@@ -88,7 +94,7 @@ public class WorkMonth {
      */
     public long getSumPerMonth() {
         long sum = 0;
-        if (!days.isEmpty()) {
+        if (areThereAnyDays()) {
             sum = days.stream().map(day -> day.getSumPerDay()).reduce(sum, (accumulator, _item) -> accumulator + _item);
         }
         return sum;
@@ -98,7 +104,7 @@ public class WorkMonth {
      * Checks whether the given workday already exists in the month.
      *
      * @param workDay - the workday that should be checked
-     * @return - true, if the workday is new, false, if not
+     * @return
      */
     public boolean isNewDate(WorkDay workDay) {
         if (days.stream().noneMatch(day -> (day.getActualDay().equals(workDay.getActualDay())))) {
@@ -109,23 +115,9 @@ public class WorkMonth {
     }
 
     /**
-     * Checks whether the given workday is in the correct month.
-     *
-     * @param workDay - the workday that should be checked
-     * @return - true, if the workday is correct, false, if not
-     */
-    public boolean isSameMonth(WorkDay workDay) {
-        if (this.getDate().getMonth() == workDay.getActualDay().getMonth()) {
-            return true;
-        } else {
-            throw new DayAdditionException("Incorrect month!");
-        }
-    }
-
-    /**
      * Checks whether the list of workdays is empty.
      *
-     * @return - true if the list of workdays is not empty
+     * @return
      */
     public boolean areThereAnyDays() {
         if (!days.isEmpty()) {
