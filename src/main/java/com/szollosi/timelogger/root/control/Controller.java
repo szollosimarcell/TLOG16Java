@@ -12,7 +12,7 @@ import java.util.Scanner;
  *
  * @author mszollosi
  */
-class Controller {
+public class Controller {
 
     private final TimeLogger workLog = new TimeLogger();
     private final TimeLoggerUI ui = new TimeLoggerUI(workLog);
