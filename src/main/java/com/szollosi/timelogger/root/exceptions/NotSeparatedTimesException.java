@@ -9,6 +9,16 @@ package com.szollosi.timelogger.root.exceptions;
  *
  * @author mszollosi
  */
-public class FutureWorkException extends RuntimeException{
+public class NotSeparatedTimesException extends RuntimeException{
+
+    private final String message;
     
+    public NotSeparatedTimesException(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

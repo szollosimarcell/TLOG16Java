@@ -46,15 +46,6 @@ public class WorkDay {
     }
 
     /**
-     * Constructor of the WorkDay class with only the required minutes for a working day.
-     *
-     * @param requiredMinPerDay
-     */
-    public WorkDay(long requiredMinPerDay) {
-        this.requiredMinPerDay = requiredMinPerDay;
-    }
-
-    /**
      * Adds a task to the list of tasks
      *
      * @param t - the task that should be added

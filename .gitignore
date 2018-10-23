@@ -2,7 +2,9 @@ nbproject/
 build/
 nbbuild/
 dist/
+out/
 nbdist/
 .nb-gradle/
 .gradle
 .idea/
+*.iml

@@ -68,11 +68,7 @@ public class Util {
      */
     public static boolean isWeekday(WorkDay workDay) {
         int dayNumber = workDay.getActualDay().getDayOfWeek().getValue();
-        if (0 < dayNumber && dayNumber < 6) {
-            return true;
-        } else {
-            return false;
-        }
+        return 0 < dayNumber && dayNumber < 6;
     }
 
     /**

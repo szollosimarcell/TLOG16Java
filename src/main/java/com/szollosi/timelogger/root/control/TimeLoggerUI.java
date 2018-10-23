@@ -7,7 +7,7 @@ import com.szollosi.timelogger.root.objects.WorkDay;
 import com.szollosi.timelogger.root.objects.WorkMonth;
 import com.szollosi.timelogger.root.exceptions.InvalidInputException;
 import com.szollosi.timelogger.root.exceptions.NotExpectedTimeOrderException;
-import com.szollosi.timelogger.root.exceptions.NotSeperatedTimesException;
+import com.szollosi.timelogger.root.exceptions.NotSeparatedTimesException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -302,7 +302,7 @@ public class TimeLoggerUI {
         if (!Util.isSeparatedTime(task, workDay.getTasks())) {
             task.setStartTime(null);
             task.setEndTime(null);
-            throw new NotSeperatedTimesException("\nInvalid start time! The time intervals of the tasks cannot overlap each other!");
+            throw new NotSeparatedTimesException("\nInvalid start time! The time intervals of the tasks cannot overlap each other!");
         }
     }
 
@@ -356,7 +356,7 @@ public class TimeLoggerUI {
         }
         if (!Util.isSeparatedTime(task, workDay.getTasks(), taskIndex)) {
             task.setEndTime(oldEndTime);
-            throw new NotSeperatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
+            throw new NotSeparatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
         }
         if (!Util.isMultipleQuarterHour(task.getMinPerTask())) {
             System.out.println("The time you have just given is not multiple of quarter hour. Do you want to round it? (y/n) ");
@@ -508,7 +508,7 @@ public class TimeLoggerUI {
         }
         if (!Util.isSeparatedTime(task, workDay.getTasks(), workDay.getTasks().indexOf(task))) {
             task.setStartTime(oldStartTime);
-            throw new NotSeperatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
+            throw new NotSeparatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
         }
         if (!Util.isMultipleQuarterHour(task.getMinPerTask())) {
             System.out.println("The time you have just given is not multiple of quarter hour. Do you want to round it? (y/n)");
@@ -548,7 +548,7 @@ public class TimeLoggerUI {
         }
         if (!Util.isSeparatedTime(task, workDay.getTasks(), workDay.getTasks().indexOf(task))) {
             task.setEndTime(oldEndTime);
-            throw new NotSeperatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
+            throw new NotSeparatedTimesException("\nInvalid time interval! The time intervals of the tasks cannot overlap each other!");
         }
         if (!Util.isMultipleQuarterHour(task.getMinPerTask())) {
             System.out.println("The time you have just given is not multiple of quarter hour. Do you want to round it? (y/n)");

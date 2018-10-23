@@ -5,7 +5,8 @@ import org.junit.Test;
 
 import java.time.LocalTime;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TaskTest {
 
@@ -20,7 +21,7 @@ public class TaskTest {
     public void getMinPerTaskTest() {
         long result = 60;
         assertTrue(task.getMinPerTask() == result);
-        task.setEndTime(LocalTime.parse("13:00"));
+        task.setEndTime(LocalTime.parse("14:00"));
         assertFalse(task.getMinPerTask() == result);
     }
 
